@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.controller;
+package ru.practicum.shareit.item;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

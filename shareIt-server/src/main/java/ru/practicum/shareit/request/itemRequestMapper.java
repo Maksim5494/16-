@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.mapper;
+package ru.practicum.shareit.request;
 
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.model.Request;

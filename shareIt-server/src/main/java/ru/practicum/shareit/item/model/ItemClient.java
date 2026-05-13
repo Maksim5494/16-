@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.client;
+package ru.practicum.shareit.item.model;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.client;
+package ru.practicum.shareit.request;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
