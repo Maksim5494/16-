@@ -1,0 +1,55 @@
+package ru.practicum.shareit.request.model;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "requests")
+public class Request {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String description;
+
+    private LocalDateTime created;
+
+    @Column(name = "requester_id")
+    private Long requesterId;
+
+    public Request() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public Long getRequesterId() {
+        return requesterId;
+    }
+
+    public void setRequesterId(Long requesterId) {
+        this.requesterId = requesterId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}
