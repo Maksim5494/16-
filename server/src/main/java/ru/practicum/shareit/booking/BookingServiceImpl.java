@@ -37,12 +37,12 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(bookingRequestDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
-        if (!Boolean.TRUE.equals(item.getAvailable())) {
-            throw new NotFoundException("Владелец не может бронировать свою вещь");
+        if (item.getOwner() != null && item.getOwner().getId().equals(userId)) {
+            throw new NotFoundException("Нельзя бронировать свою вещь");
         }
 
-        if (item.getOwner() != null && item.getOwner().getId().equals(userId)) {
-            throw new ValidationException("Вещь недоступна для бронирования");
+        if (!Boolean.TRUE.equals(item.getAvailable())) {
+            throw new NotFoundException("Вещь недоступна для бронирования");
         }
 
         LocalDateTime start = bookingRequestDto.getStart();
