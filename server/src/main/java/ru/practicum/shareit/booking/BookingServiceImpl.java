@@ -17,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
-
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
