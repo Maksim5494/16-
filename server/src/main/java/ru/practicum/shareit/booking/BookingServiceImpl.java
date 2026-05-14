@@ -32,32 +32,32 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto create(Long userId, BookingRequestDto bookingRequestDto) {
         User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User id = " + userId + " not found!"));
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         Item item = itemRepository.findById(bookingRequestDto.getItemId())
-                .orElseThrow(() -> new NotFoundException("Item id = " + bookingRequestDto.getItemId() + " not found!"));
+                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
         if (!Boolean.TRUE.equals(item.getAvailable())) {
-            throw new ValidationException("Item is not available!");
+            throw new NotFoundException("Владелец не может бронировать свою вещь");
         }
 
         if (item.getOwner() != null && item.getOwner().getId().equals(userId)) {
-            throw new ValidationException("Owner cannot book his own item!");
+            throw new ValidationException("Вещь недоступна для бронирования");
         }
 
         LocalDateTime start = bookingRequestDto.getStart();
         LocalDateTime end = bookingRequestDto.getEnd();
 
         if (start == null || end == null) {
-            throw new ValidationException("Start and end must be set!");
+            throw new ValidationException("Дата начала и окончания обязательны");
         }
 
         if (!start.isBefore(end)) {
-            throw new ValidationException("Invalid booking dates!");
+            throw new ValidationException("Дата окончания должна быть после даты начала");
         }
 
         if (start.isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Booking start must be in the future!");
+            throw new ValidationException("Дата начала должна быть в будущем");
         }
 
         Booking booking = BookingMapper.toBooking(bookingRequestDto, item, booker);
