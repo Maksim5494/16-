@@ -102,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
         if (commentRequestDto == null || commentRequestDto.getText().isEmpty() || commentRequestDto.getText().isBlank()) {
             throw new ValidationException("Comment is empty!");
         }
-        if (bookingRepository.findAllByBooker_IdAndItem_IdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now()).isEmpty()) {
+        if (bookingRepository.findAllByBookerIdAndItemIdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now()).isEmpty()) {
             throw new ValidationException("The user (id = " + userId + ") did not book this item (id = " + itemId + ") for rent");
         }
         return CommentMapper.toCommentDto(commentRepository.save(Comment.builder()
@@ -133,11 +133,11 @@ public class ItemServiceImpl implements ItemService {
         // Только владелец вещи видит информацию о бронированиях
         if (item.getOwner().getId().equals(userId)) {
             lastBooking = BookingMapper.toBookingDateInfoDto(
-                    bookingRepository.findFirstByItem_IdAndStatusAndStartBeforeOrderByEndDesc(
+                    bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByEndDesc(
                             itemId, BookingStatus.APPROVED, now).orElse(null));
 
             nextBooking = BookingMapper.toBookingDateInfoDto(
-                    bookingRepository.findFirstByItem_IdAndStatusAndStartAfterOrderByStartAsc(
+                    bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
                             itemId, BookingStatus.APPROVED, now).orElse(null));
         }
 

@@ -10,23 +10,23 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findAllByBooker_IdOrderByStartDesc(Long bookerId);
+    List<Booking> findAllByBookerIdOrderByStartDesc(Long bookerId);
 
-    List<Booking> findAllByItem_Owner_IdOrderByStartDesc(Long ownerId);
+    List<Booking> findAllByItemOwnerIdOrderByStartDesc(Long ownerId);
 
-    List<Booking> findAllByBooker_IdAndStatusOrderByStartDesc(Long bookerId, BookingStatus status);
+    List<Booking> findAllByBookerIdAndStatusOrderByStartDesc(Long bookerId, BookingStatus status);
 
-    List<Booking> findAllByItem_Owner_IdAndStatusOrderByStartDesc(Long ownerId, BookingStatus status);
+    List<Booking> findAllByItemOwnerIdAndStatusOrderByStartDesc(Long ownerId, BookingStatus status);
 
-    List<Booking> findAllByBooker_IdAndItem_IdAndStatusAndEndBefore(
+    List<Booking> findAllByBookerIdAndItemIdAndStatusAndEndBefore(
             Long bookerId, Long itemId, BookingStatus status, LocalDateTime end
     );
 
-    Optional<Booking> findFirstByItem_IdAndStatusAndStartBeforeOrderByEndDesc(
+    Optional<Booking> findFirstByItemIdAndStatusAndStartBeforeOrderByEndDesc(
             Long itemId, BookingStatus status, LocalDateTime now
     );
 
-    Optional<Booking> findFirstByItem_IdAndStatusAndStartAfterOrderByStartAsc(
+    Optional<Booking> findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
             Long itemId, BookingStatus status, LocalDateTime now
     );
 }

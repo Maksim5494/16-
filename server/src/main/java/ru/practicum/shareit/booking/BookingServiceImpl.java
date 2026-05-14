@@ -114,23 +114,23 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
 
         if ("ALL".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
+            bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
         } else if ("CURRENT".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(userId).stream()
+            bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
                     .filter(b -> !b.getStart().isAfter(LocalDateTime.now()) && !b.getEnd().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
         } else if ("PAST".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(userId).stream()
+            bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
                     .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
         } else if ("FUTURE".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(userId).stream()
+            bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
                     .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
                     .collect(Collectors.toList());
         } else if ("WAITING".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+            bookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
         } else if ("REJECTED".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+            bookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
         } else {
             throw new ValidationException("Unknown state: " + state);
         }
@@ -148,23 +148,23 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
 
         if ("ALL".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId);
+            bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
         } else if ("CURRENT".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId).stream()
+            bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId).stream()
                     .filter(b -> !b.getStart().isAfter(LocalDateTime.now()) && !b.getEnd().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
         } else if ("PAST".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId).stream()
+            bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId).stream()
                     .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
         } else if ("FUTURE".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId).stream()
+            bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId).stream()
                     .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
                     .collect(Collectors.toList());
         } else if ("WAITING".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+            bookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
         } else if ("REJECTED".equalsIgnoreCase(state)) {
-            bookings = bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+            bookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
         } else {
             throw new ValidationException("Unknown state: " + state);
         }
