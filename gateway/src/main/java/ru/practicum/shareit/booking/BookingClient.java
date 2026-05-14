@@ -37,7 +37,7 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
-        return get("/" + bookingId, userId);
+        return get(API_PREFIX + "/" + bookingId, userId);
     }
 
     public ResponseEntity<Object> getBookings(long userId, String state, Integer from, Integer size) {
@@ -46,17 +46,17 @@ public class BookingClient extends BaseClient {
                 FROM_PARAM, from,
                 SIZE_PARAM, size
         );
-        return get(GET_BOOKINGS_TEMPLATE, userId, parameters);
+        return get(API_PREFIX + GET_BOOKINGS_TEMPLATE, userId, parameters);
     }
 
     public ResponseEntity<Object> findAllByOwnerAndStatus(long userId, String state) {
         Map<String, Object> parameters = Map.of(
                 STATE_PARAM, state
         );
-        return get(GET_OWNER_BOOKINGS_TEMPLATE, userId, parameters);
+        return get(API_PREFIX + GET_OWNER_BOOKINGS_TEMPLATE, userId, parameters);
     }
 
     public ResponseEntity<Object> setApproved(long userId, Long bookingId, boolean approved) {
-        return patch(String.format(APPROVE_BOOKING_PATH, bookingId, approved), userId);
+        return patch(API_PREFIX + String.format(APPROVE_BOOKING_PATH, bookingId, approved), userId);
     }
 }
