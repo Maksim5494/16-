@@ -37,4 +37,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleRuntimeException(final RuntimeException e) {
         log.error("500: {}", e.getMessage());
-        return Map.
+        return Map.of("error", e.getMessage());
+    }
+}
