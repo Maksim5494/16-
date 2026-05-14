@@ -11,43 +11,30 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    private void log(Throwable e) {
-        log.error("Исключение {}: {}", e, e.getMessage());
-    }
 
-    @ExceptionHandler({NotFoundException.class})
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleNotFound(final NotFoundException e) {
-        log(e);
-        return Map.of("error", "Object is not found",
-                "errorMessage", e.getMessage());
+        log.error("404: {}", e.getMessage());
+        return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(DuplicatedDataException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleDuplicatedData(final DuplicatedDataException e) {
-        log(e);
-        return Map.of("error", "Object is duplicated",
-                "errorMessage", e.getMessage());
+        log.error("409: {}", e.getMessage());
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidation(final ValidationException e) {
-        log(e);
-        return Map.of(
-                "error", "Validation Error",
-                "errorMessage", e.getMessage()
-        );
+        log.error("400: {}", e.getMessage());
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleRuntimeException(final RuntimeException e) {
-        log(e);
-        return Map.of(
-                "error", "Internal Error",
-                "errorMessage", e.getMessage()
-        );
-    }
-}
+        log.error("500: {}", e.getMessage());
+        return Map.
