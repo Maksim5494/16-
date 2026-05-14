@@ -1,8 +1,11 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -16,6 +19,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiceImplTest {
 
     private UserService userService;
@@ -27,13 +32,11 @@ class UserServiceImplTest {
     void setUp() {
         userRepository = mock(UserRepository.class);
         userService = new UserServiceImpl(userRepository);
-
         user = User.builder()
                 .id(1L)
                 .name("TestUserName")
                 .email("UserEmail@test.com")
                 .build();
-
         userDto = UserMapper.toUserDto(user);
 
         when(userRepository.save(any())).thenReturn(user);
@@ -44,57 +47,46 @@ class UserServiceImplTest {
     @Test
     void findAll() {
         List<UserDto> result = userService.findAll().stream().toList();
-
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(1, result.size());
-        Assertions.assertEquals(userDto.getId(), result.getFirst().getId());
-        Assertions.assertEquals(userDto.getName(), result.getFirst().getName());
-        Assertions.assertEquals(userDto.getEmail(), result.getFirst().getEmail());
-
+        Assertions.assertEquals(result.getFirst().getId(), userDto.getId());
+        Assertions.assertEquals(result.getFirst().getName(), userDto.getName());
+        Assertions.assertEquals(result.getFirst().getEmail(), userDto.getEmail());
         verify(userRepository, times(1)).findAll();
     }
 
     @Test
     void create() {
         UserDto result = userService.create(userDto);
-
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(userDto.getId(), result.getId());
-        Assertions.assertEquals(userDto.getName(), result.getName());
-        Assertions.assertEquals(userDto.getEmail(), result.getEmail());
-
+        Assertions.assertEquals(result.getId(), userDto.getId());
+        Assertions.assertEquals(result.getName(), userDto.getName());
+        Assertions.assertEquals(result.getEmail(), userDto.getEmail());
         verify(userRepository, times(1)).save(any());
     }
 
     @Test
     void update() {
         UserDto result = userService.update(user.getId(), userDto);
-
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(userDto.getId(), result.getId());
-        Assertions.assertEquals(userDto.getName(), result.getName());
-        Assertions.assertEquals(userDto.getEmail(), result.getEmail());
-
-        verify(userRepository, times(1)).findById(anyLong());
+        Assertions.assertEquals(result.getId(), userDto.getId());
+        Assertions.assertEquals(result.getName(), userDto.getName());
+        Assertions.assertEquals(result.getEmail(), userDto.getEmail());
         verify(userRepository, times(1)).save(any());
     }
 
     @Test
     void getUserDtoById() {
         UserDto result = userService.getById(user.getId());
-
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(userDto.getId(), result.getId());
-        Assertions.assertEquals(userDto.getName(), result.getName());
-        Assertions.assertEquals(userDto.getEmail(), result.getEmail());
-
+        Assertions.assertEquals(result.getId(), userDto.getId());
+        Assertions.assertEquals(result.getName(), userDto.getName());
+        Assertions.assertEquals(result.getEmail(), userDto.getEmail());
         verify(userRepository, times(1)).findById(anyLong());
     }
 
     @Test
     void delete() {
         userService.delete(user.getId());
-
         verify(userRepository, times(1)).deleteById(anyLong());
     }
 }

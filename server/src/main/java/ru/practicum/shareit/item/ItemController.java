@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService service;
+
     private static final String REQUEST_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
@@ -59,7 +60,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public CommentDto addComment(@RequestHeader(REQUEST_HEADER) Long userId,
                                  @PathVariable Long itemId,
                                  @RequestBody CommentRequestDto commentRequestDto) {
         log.info("Получен HTTP-запрос по адресу /{itemId}/comment (метод POST). "

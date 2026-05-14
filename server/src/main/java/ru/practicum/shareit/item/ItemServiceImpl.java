@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingDateInfoDto;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -121,31 +120,14 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemInfoDto findItemById(Long userId, Long itemId) {
         log.info("Начало процесса получения вещи по id = {}", itemId);
-
         Item item = itemRepository.findById(itemId).orElseThrow(() -> {
             throw new NotFoundException("Item (id = " + itemId + ") not found!");
         });
-
-        LocalDateTime now = LocalDateTime.now();
-        BookingDateInfoDto lastBooking = null;
-        BookingDateInfoDto nextBooking = null;
-
-        // Только владелец вещи видит информацию о бронированиях
-        if (item.getOwner().getId().equals(userId)) {
-            lastBooking = BookingMapper.toBookingDateInfoDto(
-                    bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByEndDesc(
-                            itemId, BookingStatus.APPROVED, now).orElse(null));
-
-            nextBooking = BookingMapper.toBookingDateInfoDto(
-                    bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
-                            itemId, BookingStatus.APPROVED, now).orElse(null));
-        }
-
         log.info("Вещь получена");
         return ItemMapper.toItemInfoDto(
                 item,
-                lastBooking,
-                nextBooking,
+                BookingMapper.toBookingDateInfoDto(bookingRepository.findFirstByItemIdAndItemOwnerIdAndStartBeforeAndStatusOrderByStartDesc(itemId, userId, LocalDateTime.now(), BookingStatus.APPROVED).orElse(null)),
+                BookingMapper.toBookingDateInfoDto(bookingRepository.findFirstByItemIdAndItemOwnerIdAndStartAfterAndStatusOrderByStartAsc(itemId, userId, LocalDateTime.now(), BookingStatus.APPROVED).orElse(null)),
                 CommentMapper.toCommentsDtoCollection(commentRepository.findAllByItemId(itemId))
         );
     }

@@ -26,10 +26,10 @@ import java.util.List;
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String REQUEST_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemRequestDto create(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ItemRequestDto create(@RequestHeader(REQUEST_HEADER) Long userId,
                                  @RequestBody ItemRequestRequestDto itemRequestRequestDto) {
         itemRequestRequestDto.setRequestorId(userId);
         log.info("Получен HTTP-запрос по адресу /requests (метод POST). "
@@ -38,7 +38,7 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public List<ItemRequestDto> findAll(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public List<ItemRequestDto> findAll(@RequestHeader(REQUEST_HEADER) Long userId) {
         log.info("Получен HTTP-запрос по адресу /requests (метод GET). "
                 + "Вызван метод findAllByUserId(userId)");
         return itemRequestService.findAllByUserId(userId);

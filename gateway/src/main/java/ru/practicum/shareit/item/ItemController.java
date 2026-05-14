@@ -19,44 +19,45 @@ import ru.practicum.shareit.item.dto.ItemRequestDto;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
-
     private final ItemClient itemClient;
 
+    private static final String REQUEST_HEADER = "X-Sharer-User-Id";
+
     @GetMapping
-    public ResponseEntity<Object> getItems(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public ResponseEntity<Object> getItems(@RequestHeader(REQUEST_HEADER) Long userId) {
         return itemClient.getItems(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> getItem(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ResponseEntity<Object> getItem(@RequestHeader(REQUEST_HEADER) Long userId,
                                           @PathVariable Long itemId) {
         return itemClient.getItem(userId, itemId);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createItem(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ResponseEntity<Object> createItem(@RequestHeader(REQUEST_HEADER) Long userId,
                                              @Valid @RequestBody ItemRequestDto itemRequestDto) {
         return itemClient.createItem(userId, itemRequestDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> updateItem(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ResponseEntity<Object> updateItem(@RequestHeader(REQUEST_HEADER) Long userId,
                                              @PathVariable Long itemId,
                                              @RequestBody ItemRequestDto itemRequestDto) {
         return itemClient.updateItem(userId, itemId, itemRequestDto);
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> addComment(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ResponseEntity<Object> addComment(@RequestHeader(REQUEST_HEADER) Long userId,
                                              @PathVariable Long itemId,
                                              @Valid @RequestBody CommentRequestDto commentRequestDto) {
         return itemClient.addComment(userId, itemId, commentRequestDto);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> findItemsByText(@RequestHeader(USER_ID_HEADER) Long userId,
-                                                  @RequestParam(defaultValue = "", required = false) String text) {
+    public ResponseEntity<Object> findItemsByText(
+            @RequestHeader(REQUEST_HEADER) Long userId,
+            @RequestParam(defaultValue = "", required = false) String text) {
         return itemClient.findItemsByText(userId, text);
     }
 }
