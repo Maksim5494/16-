@@ -98,7 +98,7 @@ class BookingServiceImplTest {
     @Test
     void setApproved() {
         when(bookingRepository.findById(booking.getId())).thenReturn(Optional.of(booking));
-        when(userRepository.existsById(owner.getId())).thenReturn(true);
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
         when(bookingRepository.save(any())).thenReturn(booking);
 
         BookingDto result = bookingService.setApproved(owner.getId(), booking.getId(), true);
@@ -111,7 +111,6 @@ class BookingServiceImplTest {
     @Test
     void findById() {
         when(bookingRepository.findById(booking.getId())).thenReturn(Optional.of(booking));
-        when(userRepository.existsById(user.getId())).thenReturn(true);
 
         BookingDto result = bookingService.findById(booking.getId(), user.getId());
 
@@ -122,7 +121,7 @@ class BookingServiceImplTest {
 
     @Test
     void findAllByBookerAndStatusTest() {
-        when(userRepository.existsById(user.getId())).thenReturn(true);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(user.getId()))
                 .thenReturn(List.of(booking));
 
@@ -135,7 +134,7 @@ class BookingServiceImplTest {
 
     @Test
     void findAllByOwnerAndStatus() {
-        when(userRepository.existsById(owner.getId())).thenReturn(true);
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
         when(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(owner.getId()))
                 .thenReturn(List.of(booking));
 
