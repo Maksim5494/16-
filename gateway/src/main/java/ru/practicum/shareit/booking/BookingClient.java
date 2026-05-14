@@ -1,56 +1,46 @@
 package ru.practicum.shareit.booking;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.DefaultUriBuilderFactory;
-
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
 
-@Service
+@Component
 public class BookingClient extends BaseClient {
-    private static final String API_PREFIX = "/bookings";
 
-    @Autowired
-    public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
-        super(
-                builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
-                        .requestFactory(() -> new HttpComponentsClientHttpRequestFactory())
-                        .build()
-        );
+    private static final String BOOKINGS_PATH = "/bookings";
+    private static final String OWNER_PATH = "/owner";
+    private static final String STATE_PARAM = "state";
+    private static final String FROM_PARAM = "from";
+    private static final String SIZE_PARAM = "size";
+    private static final String APPROVED_PARAM = "approved";
+    private static final String SLASH = "/";
+
+    public BookingClient(RestTemplate restTemplate) {
+        super(restTemplate);
     }
-
-    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state.name(),
-                "from", from,
-                "size", size
-        );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
-    }
-
 
     public ResponseEntity<Object> bookItem(long userId, BookItemRequestDto requestDto) {
-        return post("", userId, requestDto);
+        return post(BOOKINGS_PATH, userId, requestDto);
     }
 
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
-        return get("/" + bookingId, userId);
+        return get(BOOKINGS_PATH + SLASH + bookingId, userId);
+    }
+
+    public ResponseEntity<Object> findAllByBookerAndStatus(long userId, BookingState state, Integer from, Integer size) {
+        return get(BOOKINGS_PATH + "?" + STATE_PARAM + "=" + state.name()
+                + "&" + FROM_PARAM + "=" + from
+                + "&" + SIZE_PARAM + "=" + size, userId);
     }
 
     public ResponseEntity<Object> findAllByOwnerAndStatus(long userId, BookingState state) {
-        return get("/owner?state=" + state.name(), userId);
+        return get(BOOKINGS_PATH + OWNER_PATH + "?" + STATE_PARAM + "=" + state.name(), userId);
     }
 
     public ResponseEntity<Object> setApproved(long userId, Long bookingId, boolean approved) {
-        return patch("/" + bookingId + "?approved=" + approved, userId);
+        return patch(BOOKINGS_PATH + SLASH + bookingId + "?" + APPROVED_PARAM + "=" + approved, userId);
     }
 }

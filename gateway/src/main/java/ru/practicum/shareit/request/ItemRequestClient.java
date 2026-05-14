@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ItemRequestClient extends BaseClient {
     private static final String API_PREFIX = "/requests";
@@ -27,18 +29,22 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> findAll(long userId) {
+        log.info("Отправка GET запроса на /requests. userId={}", userId);
         return get("", userId);
     }
 
     public ResponseEntity<Object> create(long userId, ItemRequestRequestDto itemRequestRequestDto) {
+        log.info("Отправка POST запроса на /requests. userId={}, requestDto={}", userId, itemRequestRequestDto);
         return post("", userId, itemRequestRequestDto);
     }
 
-    public ResponseEntity<Object> findItemRequestById(long userId, Long requestId) {
+    public ResponseEntity<Object> findById(long userId, Long requestId) {
+        log.info("Отправка GET запроса на /requests/{}. userId={}", requestId, userId);
         return get("/" + requestId, userId);
     }
 
-    public ResponseEntity<Object> findAllUsersItemRequest(long userId, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllByOwner(long userId, Integer from, Integer size) {
+        log.info("Отправка GET запроса на /requests/all. userId={}, from={}, size={}", userId, from, size);
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
