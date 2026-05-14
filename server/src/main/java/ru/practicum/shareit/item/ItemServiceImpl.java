@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingDateInfoDto;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -101,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
         if (commentRequestDto == null || commentRequestDto.getText().isEmpty() || commentRequestDto.getText().isBlank()) {
             throw new ValidationException("Comment is empty!");
         }
-        if (bookingRepository.findAllByBookerIdAndItemIdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now()).isEmpty()) {
+        if (bookingRepository.findAllByBooker_IdAndItem_IdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now()).isEmpty()) {
             throw new ValidationException("The user (id = " + userId + ") did not book this item (id = " + itemId + ") for rent");
         }
         return CommentMapper.toCommentDto(commentRepository.save(Comment.builder()
@@ -120,14 +121,31 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemInfoDto findItemById(Long userId, Long itemId) {
         log.info("Начало процесса получения вещи по id = {}", itemId);
+
         Item item = itemRepository.findById(itemId).orElseThrow(() -> {
             throw new NotFoundException("Item (id = " + itemId + ") not found!");
         });
+
+        LocalDateTime now = LocalDateTime.now();
+        BookingDateInfoDto lastBooking = null;
+        BookingDateInfoDto nextBooking = null;
+
+        // Только владелец вещи видит информацию о бронированиях
+        if (item.getOwner().getId().equals(userId)) {
+            lastBooking = BookingMapper.toBookingDateInfoDto(
+                    bookingRepository.findFirstByItem_IdAndStatusAndStartBeforeOrderByEndDesc(
+                            itemId, BookingStatus.APPROVED, now).orElse(null));
+
+            nextBooking = BookingMapper.toBookingDateInfoDto(
+                    bookingRepository.findFirstByItem_IdAndStatusAndStartAfterOrderByStartAsc(
+                            itemId, BookingStatus.APPROVED, now).orElse(null));
+        }
+
         log.info("Вещь получена");
         return ItemMapper.toItemInfoDto(
                 item,
-                BookingMapper.toBookingDateInfoDto(bookingRepository.findFirstByItemIdAndItemOwnerIdAndStartBeforeAndStatusOrderByStartDesc(itemId, userId, LocalDateTime.now(), BookingStatus.APPROVED).orElse(null)),
-                BookingMapper.toBookingDateInfoDto(bookingRepository.findFirstByItemIdAndItemOwnerIdAndStartAfterAndStatusOrderByStartAsc(itemId, userId, LocalDateTime.now(), BookingStatus.APPROVED).orElse(null)),
+                lastBooking,
+                nextBooking,
                 CommentMapper.toCommentsDtoCollection(commentRepository.findAllByItemId(itemId))
         );
     }
