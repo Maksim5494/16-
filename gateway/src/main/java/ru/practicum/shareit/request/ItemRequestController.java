@@ -5,44 +5,40 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/requests")
+@RequiredArgsConstructor
+@Validated
 public class ItemRequestController {
+    private static final String REQUEST_HEADER = "X-Sharer-User-Id";
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> create(@RequestHeader(REQUEST_HEADER) Long userId,
                                          @Valid @RequestBody ItemRequestRequestDto itemRequestRequestDto) {
         return itemRequestClient.create(userId, itemRequestRequestDto);
     }
 
     @GetMapping
-    public ResponseEntity<Object> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> findAll(@RequestHeader(REQUEST_HEADER) Long userId) {
         return itemRequestClient.findAll(userId);
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> findItemRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> findItemRequestById(@RequestHeader(REQUEST_HEADER) Long userId,
                                                       @PathVariable Long requestId) {
         return itemRequestClient.findItemRequestById(userId, requestId);
     }
 
     @GetMapping("/all")
     public ResponseEntity<Object> findAllUsersItemRequest(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PositiveOrZero @RequestParam(defaultValue = "0", required = false) int from,
-            @Positive @RequestParam(defaultValue = "10", required = false) int size) {
+            @RequestHeader(REQUEST_HEADER) Long userId,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return itemRequestClient.findAllUsersItemRequest(userId, from, size);
     }
 }

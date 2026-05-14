@@ -39,7 +39,6 @@ public class BookingClient extends BaseClient {
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
         return get(API_PREFIX + "/" + bookingId, userId);
     }
-
     public ResponseEntity<Object> getBookings(long userId, String state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 STATE_PARAM, state,
