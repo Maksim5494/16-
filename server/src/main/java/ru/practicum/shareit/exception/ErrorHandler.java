@@ -31,21 +31,23 @@ public class ErrorHandler {
                 "errorMessage", e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidation(final ValidationException e) {
+        log(e);
         return Map.of(
-                "Validation Error!",
-                e.getMessage()
+                "error", "Validation Error",
+                "errorMessage", e.getMessage()
         );
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleRuntimeException(final RuntimeException e) {
+        log(e);
         return Map.of(
-                e.getMessage(),
-                "Internal Error!"
+                "error", "Internal Error",
+                "errorMessage", e.getMessage()
         );
     }
 }
