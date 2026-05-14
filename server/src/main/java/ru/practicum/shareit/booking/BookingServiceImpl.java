@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
+
     private final UserRepository userRepository;
+
     private final ItemRepository itemRepository;
 
     @Override
@@ -105,7 +107,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Collection <BookingDto> findAllByBookerAndStatus(Long userId, String state) {
+    public Collection<BookingDto> findAllByBookerAndStatus(Long userId, String state) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User id = " + userId + " not found!"));
 
